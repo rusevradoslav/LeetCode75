@@ -1,0 +1,597 @@
+# LeetCode 75: Java Solutions
+
+This repository contains Java solutions for the LeetCode 75 study plan. Each solution includes documented code with time and space complexity analysis.
+
+## Progress
+
+| Section | Problems | Status |
+|---------|----------|--------|
+| Arrays & Strings | 9 | ✅ |
+| Two Pointers | 0 | ⬜ |
+| Sliding Window | 0 | ⬜ |
+| Prefix Sum | 0 | ⬜ |
+| Hash Map / Set | 0 | ⬜ |
+| Stack | 0 | ⬜ |
+| Queue | 0 | ⬜ |
+| Linked List | 0 | ⬜ |
+| Binary Tree - DFS | 0 | ⬜ |
+| Binary Tree - BFS | 0 | ⬜ |
+| Binary Search Tree | 0 | ⬜ |
+| Graphs - DFS | 0 | ⬜ |
+| Graphs - BFS | 0 | ⬜ |
+| Heap / Priority Queue | 0 | ⬜ |
+| Binary Search | 0 | ⬜ |
+| Backtracking | 0 | ⬜ |
+| DP - 1D | 0 | ⬜ |
+| DP - Multidimensional | 0 | ⬜ |
+| Bit Manipulation | 0 | ⬜ |
+| Trie | 0 | ⬜ |
+| Intervals | 0 | ⬜ |
+| Monotonic Stack | 0 | ⬜ |
+
+---
+
+## Arrays & Strings
+
+### Quick Reference
+
+| # | Problem | Difficulty | Time | Space | Pattern |
+|---|---------|------------|------|-------|---------|
+| 1 | [Merge Strings Alternately](#1-merge-strings-alternately) | Easy | O(n+m) | O(n+m) | [Two Pointers](#two-pointers) |
+| 2 | [Greatest Common Divisor of Strings](#2-greatest-common-divisor-of-strings) | Easy | O(n+m) | O(n+m) | [Math (Euclidean Algorithm)](#math-euclidean-algorithm) |
+| 3 | [Kids With the Greatest Number of Candies](#3-kids-with-the-greatest-number-of-candies) | Easy | O(n) | O(n) | [Two-Pass Scan](#two-pass-scan) |
+| 4 | [Can Place Flowers](#4-can-place-flowers) | Easy | O(n) | O(1) | [Greedy](#greedy) |
+| 5 | [Reverse Vowels of a String](#5-reverse-vowels-of-a-string) | Easy | O(n) | O(n) | [Two Pointers](#two-pointers) |
+| 6 | [Reverse Words in a String](#6-reverse-words-in-a-string) | Medium | O(n) | O(n) | [String Manipulation](#string-manipulation) |
+| 7 | [Product of Array Except Self](#7-product-of-array-except-self) | Medium | O(n) | O(1)* | [Prefix/Suffix](#prefixsuffix) |
+| 8 | [Increasing Triplet Subsequence](#8-increasing-triplet-subsequence) | Medium | O(n) | O(1) | [Greedy](#greedy) |
+| 9 | [String Compression](#9-string-compression) | Medium | O(n) | O(1) | [Read/Write Pointers](#readwrite-pointers) |
+| 10 | [Reverse Integer Number](#10-reverse-integer-number) | Bonus | O(d) | O(1) | [Digit Manipulation](#digit-manipulation) |
+| 11 | [Reverse Decimal Number](#11-reverse-decimal-number) | Bonus | O(d) | O(d) | [Digit Manipulation](#digit-manipulation) |
+
+*\* O(1) excluding output array*
+
+---
+
+### 1. Merge Strings Alternately
+
+**Approach:** Use two pointers, one for each string. Alternate appending characters while either pointer is in range.
+
+**Time Complexity:** O(n + m) — each character visited exactly once.
+
+**Space Complexity:** O(n + m) — StringBuilder holds the combined result.
+
+**Pattern:** [Two Pointers](#two-pointers) — traverse two sequences simultaneously using separate pointers.
+
+**Key Insight:** No length comparison needed — the OR condition and two separate if statements naturally handle strings of any length.
+
+**Code:**
+```java
+int p1 = 0, p2 = 0;
+StringBuilder result = new StringBuilder();
+
+while (p1 < word1.length() || p2 < word2.length()) {
+    if (p1 < word1.length()) {
+        result.append(word1.charAt(p1++));
+    }
+    if (p2 < word2.length()) {
+        result.append(word2.charAt(p2++));
+    }
+}
+
+return result.toString();
+```
+
+---
+
+### 2. Greatest Common Divisor of Strings
+
+**Approach:** First check if both strings share the same repeating pattern by comparing concatenations. If they do, the GCD of their lengths gives the length of the answer.
+
+**Time Complexity:** O(n + m) — string concatenation and comparison.
+
+**Space Complexity:** O(n + m) — concatenated strings.
+
+**Pattern:** [Math (Euclidean Algorithm)](#math-euclidean-algorithm) — repeatedly divide to find the greatest common divisor.
+
+**Key Insight:** If `str1 + str2` equals `str2 + str1`, they share a common pattern. The GCD of lengths tells us the pattern length.
+
+**Code:**
+```java
+if (!(str1 + str2).equals(str2 + str1)) {
+    return "";
+}
+
+int gcdLength = gcd(str1.length(), str2.length());
+return str1.substring(0, gcdLength);
+
+// Euclidean algorithm
+int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+```
+
+---
+
+### 3. Kids With the Greatest Number of Candies
+
+**Approach:** First pass finds the maximum candies. Second pass checks if each kid's candies plus extra meets or exceeds the maximum.
+
+**Time Complexity:** O(n) — two passes through the array.
+
+**Space Complexity:** O(n) — result list stores n booleans.
+
+**Pattern:** [Two-Pass Scan](#two-pass-scan) — first pass gathers global info, second pass uses it.
+
+**Key Insight:** You need a global value (max) before you can compare each element against it.
+
+**Code:**
+```java
+int maxCandies = 0;
+for (int candy : candies) {
+    maxCandies = Math.max(maxCandies, candy);
+}
+
+List<Boolean> result = new ArrayList<>();
+for (int candy : candies) {
+    result.add(candy + extraCandies >= maxCandies);
+}
+
+return result;
+```
+
+---
+
+### 4. Can Place Flowers
+
+**Approach:** Greedy — plant a flower whenever the current plot and both neighbors are empty. Update the array immediately to prevent adjacent placements.
+
+**Time Complexity:** O(n) — single pass through the array.
+
+**Space Complexity:** O(1) — modify array in place.
+
+**Pattern:** [Greedy](#greedy) — make the locally optimal choice at each step.
+
+**Key Insight:** Planting at the earliest valid position never blocks a better solution. Skipping a valid spot gains nothing.
+
+**Code:**
+```java
+for (int i = 0; i < flowerbed.length; i++) {
+    boolean left = (i == 0) || (flowerbed[i - 1] == 0);
+    boolean right = (i == flowerbed.length - 1) || (flowerbed[i + 1] == 0);
+
+    if (left && right && flowerbed[i] == 0) {
+        flowerbed[i] = 1;
+        n--;
+    }
+}
+
+return n <= 0;
+```
+
+---
+
+### 5. Reverse Vowels of a String
+
+**Approach:** Two pointers from opposite ends. Move inward, swapping only when both pointers point to vowels.
+
+**Time Complexity:** O(n) — each character visited at most once.
+
+**Space Complexity:** O(n) — char array to allow swapping.
+
+**Pattern:** [Two Pointers](#two-pointers) — traverse from opposite ends, swapping when conditions are met.
+
+**Key Insight:** Use else-if to ensure only one action per iteration — either swap, move left, or move right.
+
+**Code:**
+```java
+char[] arr = s.toCharArray();
+int left = 0, right = arr.length - 1;
+
+while (left < right) {
+    if (isVowel(arr[left]) && isVowel(arr[right])) {
+        char temp = arr[left];
+        arr[left++] = arr[right];
+        arr[right--] = temp;
+    } else if (!isVowel(arr[left])) {
+        left++;
+    } else {
+        right--;
+    }
+}
+
+return new String(arr);
+```
+
+---
+
+### 6. Reverse Words in a String
+
+**Approach:** Trim whitespace, split by one or more spaces using regex, then iterate backwards to build the result.
+
+**Time Complexity:** O(n) — each character processed a constant number of times.
+
+**Space Complexity:** O(n) — words array and StringBuilder.
+
+**Pattern:** [String Manipulation](#string-manipulation) — split, transform, and rebuild the string.
+
+**Key Insight:** The regex `\\s+` handles multiple spaces between words automatically.
+
+**Code:**
+```java
+String[] words = s.trim().split("\\s+");
+StringBuilder result = new StringBuilder();
+
+for (int i = words.length - 1; i >= 0; i--) {
+    result.append(words[i]);
+    if (i > 0) {
+        result.append(" ");
+    }
+}
+
+return result.toString();
+```
+
+---
+
+### 7. Product of Array Except Self
+
+**Approach:** Build prefix products (product of all elements before index i) and suffix products (product of all elements after index i). Multiply them for the final result.
+
+**Time Complexity:** O(n) — two or three passes through the array.
+
+**Space Complexity:** O(n) standard version, O(1) optimized version (excluding output).
+
+**Pattern:** [Prefix/Suffix](#prefixsuffix) — precompute cumulative values from both directions.
+
+**Key Insight:** Start prefix and suffix with 1 (multiplicative identity) because "nothing to multiply" should not affect the result. Using 0 would break everything.
+
+**Pseudocode (standard):**
+```
+prefixProducts[0] = 1
+for i = 1 to n-1:
+    prefixProducts[i] = prefixProducts[i-1] * nums[i-1]
+
+suffixProducts[n-1] = 1
+for i = n-2 down to 0:
+    suffixProducts[i] = suffixProducts[i+1] * nums[i+1]
+
+for i = 0 to n-1:
+    result[i] = prefixProducts[i] * suffixProducts[i]
+```
+
+**Pseudocode (space optimized):**
+```
+result[0] = 1
+for i = 1 to n-1:
+    result[i] = result[i-1] * nums[i-1]   // prefix in result
+
+suffix = 1
+for i = n-1 down to 0:
+    result[i] = result[i] * suffix
+    suffix = suffix * nums[i]
+```
+
+---
+
+### 8. Increasing Triplet Subsequence
+
+**Approach:** Track two candidates — the smallest and second smallest values seen so far. If any value exceeds both, a triplet exists.
+
+**Time Complexity:** O(n) — single pass through the array.
+
+**Space Complexity:** O(1) — only two variables.
+
+**Pattern:** [Greedy](#greedy) — track optimal candidates while scanning.
+
+**Key Insight:** We don't need to track indices — just knowing that smaller values exist before is enough.
+
+**Code:**
+```java
+int first = Integer.MAX_VALUE;
+int second = Integer.MAX_VALUE;
+
+for (int num : nums) {
+    if (num <= first) {
+        first = num;
+    } else if (num <= second) {
+        second = num;
+    } else {
+        return true;
+    }
+}
+
+return false;
+```
+
+---
+
+### 9. String Compression
+
+**Approach:** Use read/write pointers. Read pointer counts consecutive characters, write pointer overwrites the array with the character and its count.
+
+**Time Complexity:** O(n) — each character read once.
+
+**Space Complexity:** O(1) — compression happens in place.
+
+**Pattern:** [Read/Write Pointers](#readwrite-pointers) — read ahead while writing in place behind.
+
+**Key Insight:** Compressed output is always ≤ original length, so write pointer never overtakes read pointer.
+
+**Code:**
+```java
+int write = 0, read = 0;
+
+while (read < chars.length) {
+    char currentChar = chars[read];
+    int count = 0;
+
+    while (read < chars.length && chars[read] == currentChar) {
+        read++;
+        count++;
+    }
+
+    chars[write++] = currentChar;
+    if (count > 1) {
+        for (char c : String.valueOf(count).toCharArray()) {
+            chars[write++] = c;
+        }
+    }
+}
+
+return write;
+```
+
+---
+
+### 10. Reverse Integer Number
+
+**Approach:** Extract digits using modulo, build reversed number by multiplying by 10 and adding each digit.
+
+**Time Complexity:** O(d) — where d is the number of digits (log₁₀n).
+
+**Space Complexity:** O(1) — only a single variable.
+
+**Pattern:** [Digit Manipulation](#digit-manipulation) — extract and rebuild digits using modulo and division.
+
+**Key Insight:** Check for overflow before multiplying, not after. Java's `%` preserves sign, so negative numbers work automatically.
+
+**Code:**
+```java
+int reversed = 0;
+
+while (number != 0) {
+    if (willOverflow(reversed)) {
+        return 0;
+    }
+    reversed = reversed * 10 + number % 10;
+    number /= 10;
+}
+
+return reversed;
+
+boolean willOverflow(int num) {
+    return num > Integer.MAX_VALUE / 10 || num < Integer.MIN_VALUE / 10;
+}
+```
+
+---
+
+### 11. Reverse Decimal Number
+
+**Approach:** Split the number into integer and fractional parts. Reverse each part separately, then swap their positions around the decimal point.
+
+**Time Complexity:** O(d) — where d is total number of digits.
+
+**Space Complexity:** O(d) — string operations for splitting.
+
+**Pattern:** [Digit Manipulation](#digit-manipulation) — extract, reverse, and reposition decimal parts.
+
+**Key Insight:** Reversed integer part becomes the new fractional part (scaled by 10^length), reversed fractional part becomes the new integer part.
+
+**Pseudocode:**
+```
+split number by "." into integerPart and fractionalPart
+store the sign, work with absolute value
+
+reversedFractional = reverse(fractionalPart)  // becomes new integer
+reversedInteger = reverse(integerPart)        // becomes new fractional
+
+newFractional = reversedInteger / 10^(length of integerPart)
+result = (reversedFractional + newFractional) * sign
+
+return result
+```
+
+---
+
+## Key Patterns
+
+### Two Pointers
+
+**When to use:** Problems involving pairs, comparing elements from different positions, or traversing from both ends.
+
+**How it works:** Maintain two pointers that move based on conditions — either toward each other, or in the same direction at different speeds.
+
+**Template:**
+```java
+int left = 0, right = arr.length - 1;
+while (left < right) {
+    if (condition) {
+        // process
+        left++;
+        right--;
+    } else if (leftCondition) {
+        left++;
+    } else {
+        right--;
+    }
+}
+```
+
+---
+
+### Two-Pass Scan
+
+**When to use:** When each element's result depends on some global property of the array (max, min, sum, etc.).
+
+**How it works:** First pass computes the global value. Second pass uses it to calculate results.
+
+**Template:**
+```java
+// Pass 1: gather global info
+int max = 0;
+for (int num : nums) {
+    max = Math.max(max, num);
+}
+
+// Pass 2: use it
+for (int num : nums) {
+    result.add(num >= max);
+}
+```
+
+---
+
+### Greedy
+
+**When to use:** When making the locally optimal choice at each step leads to a globally optimal solution.
+
+**How it works:** At each step, pick the best available option without reconsidering past choices. Works when local decisions don't block better future choices.
+
+**Template:**
+```java
+for (int i = 0; i < arr.length; i++) {
+    if (isValid(i)) {
+        takeAction(i);
+    }
+}
+```
+
+---
+
+### Prefix/Suffix
+
+**When to use:** When each element's answer depends on all other elements — everything to its left and right.
+
+**How it works:** Precompute cumulative values from the start (prefix) and from the end (suffix). Combine them for the final result.
+
+**Why start with 1:** 1 is the multiplicative identity — "nothing to multiply" means multiply by 1.
+
+**Template:**
+```java
+// Prefix: left to right
+prefix[0] = 1;
+for (int i = 1; i < n; i++) {
+    prefix[i] = prefix[i - 1] * nums[i - 1];
+}
+
+// Suffix: right to left
+suffix[n - 1] = 1;
+for (int i = n - 2; i >= 0; i--) {
+    suffix[i] = suffix[i + 1] * nums[i + 1];
+}
+
+// Combine
+result[i] = prefix[i] * suffix[i];
+```
+
+---
+
+### Read/Write Pointers
+
+**When to use:** In-place array modification where output size ≤ input size.
+
+**How it works:** Read pointer scans ahead, write pointer trails behind overwriting the array. Safe because compressed/filtered output never exceeds original.
+
+**Template:**
+```java
+int write = 0, read = 0;
+while (read < arr.length) {
+    // process at read position
+    // write result to arr[write++]
+    // advance read
+}
+return write; // new length
+```
+
+---
+
+### Digit Manipulation
+
+**When to use:** Problems involving reversing numbers, extracting digits, or building numbers digit by digit.
+
+**How it works:** Use `% 10` to extract last digit, `/ 10` to remove it. Build result with `result * 10 + digit`.
+
+**Template:**
+```java
+int result = 0;
+while (number != 0) {
+    int digit = number % 10;
+    result = result * 10 + digit;
+    number /= 10;
+}
+```
+
+---
+
+### String Manipulation
+
+**When to use:** Problems requiring splitting, reversing, or transforming strings.
+
+**How it works:** Use built-in methods like `split()`, `trim()`, `StringBuilder` to transform and rebuild.
+
+**Template:**
+```java
+String[] parts = s.trim().split("\\s+");
+StringBuilder result = new StringBuilder();
+for (String part : parts) {
+    // transform and append
+}
+return result.toString();
+```
+
+---
+
+### Math (Euclidean Algorithm)
+
+**When to use:** Finding the greatest common divisor (GCD) of two numbers or lengths.
+
+**How it works:** Repeatedly replace the larger number with the remainder of dividing it by the smaller. Stop when remainder is 0.
+
+**Template:**
+```java
+int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+```
+
+---
+
+## Big O Essentials
+
+Big O describes how runtime or space **scales** with input size. We drop constants because we care about growth rate, not exact measurements.
+
+### Common Complexities
+
+| Complexity | Name | Example |
+|------------|------|---------|
+| O(1) | Constant | Array access, variable swap |
+| O(log n) | Logarithmic | Binary search, GCD |
+| O(n) | Linear | Single loop, two pointers |
+| O(n log n) | Linearithmic | Merge sort, heap sort |
+| O(n²) | Quadratic | Nested loops, brute force |
+
+### Why O(2n) = O(n)
+
+If you loop twice, doubling the input still doubles the work. The growth rate is linear either way. Constants don't change the fundamental scaling.
+
+### Quick Rules
+
+| Code Pattern | Complexity |
+|--------------|------------|
+| Single loop through n elements | O(n) |
+| Two separate loops (not nested) | O(n) |
+| Nested loops | O(n²) |
+| Halving each iteration | O(log n) |
+| Loop with halving inside | O(n log n) |
