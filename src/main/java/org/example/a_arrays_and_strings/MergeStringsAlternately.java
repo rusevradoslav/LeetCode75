@@ -24,6 +24,7 @@ package org.example.a_arrays_and_strings;
  */
 
 public class MergeStringsAlternately {
+
     public String mergeAlternately(String word1, String word2) {
         int firstPointer = 0;
         int secondPointer = 0;

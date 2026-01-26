@@ -31,6 +31,7 @@ package org.example.a_arrays_and_strings;
  */
 
 public class CanPlaceFlowers {
+
     public boolean canPlaceFlowers(int[] flowerbed, int n) {
         int size = flowerbed.length;
         for (int i = 0; i < size; i++) {
