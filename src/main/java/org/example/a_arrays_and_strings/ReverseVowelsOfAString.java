@@ -38,16 +38,15 @@ public class ReverseVowelsOfAString {
             char rightCharacter = charArray[right];
             boolean isLeftCharacterAVowel = isVowel(leftCharacter);
             boolean isRightCharacterAVowel = isVowel(rightCharacter);
+
             if (isLeftCharacterAVowel && isRightCharacterAVowel) {
                 charArray[left] = rightCharacter;
                 charArray[right] = leftCharacter;
                 left++;
                 right--;
-            }
-            if (!isLeftCharacterAVowel) {
+            } else if (!isLeftCharacterAVowel) {
                 left++;
-            }
-            if (!isRightCharacterAVowel) {
+            } else {
                 right--;
             }
         }
@@ -56,6 +55,6 @@ public class ReverseVowelsOfAString {
     }
 
     private static boolean isVowel(char character) {
-        return List.of('a', 'e', 'i', 'o', 'u').contains(Character.toLowerCase(character));
+        return "aeiouAEIOU".indexOf(character) != -1;
     }
 }
