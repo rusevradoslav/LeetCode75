@@ -43,13 +43,13 @@ public class ReverseDecimalNumber {
 
     public double reverseDecimal(double number) {
         String[] parts = String.valueOf(Math.abs(number)).split("\\.");
-        int fraction = parts[0].length();
+        int integerPart = parts[0].length();
         long fPart = Math.abs(Long.parseLong(parts[0]));
         long sPart = Long.parseLong(parts[1]);
         int multiplier = number < 0 ? -1 : 1;
 
         double fPartReversed = reverse(sPart);
-        double sPartReversed = reverse(fPart) / Math.pow(10, fraction);
+        double sPartReversed = reverse(fPart) / Math.pow(10, integerPart);
 
 
         return (fPartReversed + sPartReversed) * multiplier;
