@@ -2,33 +2,30 @@
 
 This repository contains Java solutions for the LeetCode 75 study plan. Each solution includes documented code with time and space complexity analysis.
 
-## Progress
+## Sections
 
-| Section | Problems | Status |
-|---------|----------|--------|
-| Arrays & Strings | 9 | ✅ |
-| Two Pointers | 0 | ⬜ |
-| Sliding Window | 0 | ⬜ |
-| Prefix Sum | 0 | ⬜ |
-| Hash Map / Set | 0 | ⬜ |
-| Stack | 0 | ⬜ |
-| Queue | 0 | ⬜ |
-| Linked List | 0 | ⬜ |
-| Binary Tree - DFS | 0 | ⬜ |
-| Binary Tree - BFS | 0 | ⬜ |
-| Binary Search Tree | 0 | ⬜ |
-| Graphs - DFS | 0 | ⬜ |
-| Graphs - BFS | 0 | ⬜ |
-| Heap / Priority Queue | 0 | ⬜ |
-| Binary Search | 0 | ⬜ |
-| Backtracking | 0 | ⬜ |
-| DP - 1D | 0 | ⬜ |
-| DP - Multidimensional | 0 | ⬜ |
-| Bit Manipulation | 0 | ⬜ |
-| Trie | 0 | ⬜ |
-| Intervals | 0 | ⬜ |
-| Monotonic Stack | 0 | ⬜ |
-
+- [Arrays & Strings](#arrays--strings)
+- [Two Pointers](#two-pointers-1)
+- [Sliding Window](#sliding-window)
+- [Prefix Sum](#prefix-sum)
+- [Hash Map / Set](#hash-map--set)
+- [Stack](#stack)
+- [Queue](#queue)
+- [Linked List](#linked-list)
+- [Binary Tree - DFS](#binary-tree---dfs)
+- [Binary Tree - BFS](#binary-tree---bfs)
+- [Binary Search Tree](#binary-search-tree)
+- [Graphs - DFS](#graphs---dfs)
+- [Graphs - BFS](#graphs---bfs)
+- [Heap / Priority Queue](#heap--priority-queue)
+- [Binary Search](#binary-search)
+- [Backtracking](#backtracking)
+- [DP - 1D](#dp---1d)
+- [DP - Multidimensional](#dp---multidimensional)
+- [Bit Manipulation](#bit-manipulation)
+- [Trie](#trie)
+- [Intervals](#intervals)
+- [Monotonic Stack](#monotonic-stack)
 ---
 
 ## Arrays & Strings
