@@ -34,8 +34,10 @@ public class ReverseWordsInAString {
         String[] words = s.trim().split("\\s+");
         StringBuilder sb = new StringBuilder();
         for (int i = words.length - 1; i >= 0; i--) {
-            sb.append(words[i]).append(" ");
+            if (i > 0) {
+                sb.append(' ');
+            }
         }
-        return sb.toString().trim();
+        return sb.toString();
     }
 }
