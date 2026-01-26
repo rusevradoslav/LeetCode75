@@ -16,16 +16,26 @@ package org.example.a_arrays_and_strings;
  * result[i] = prefixProducts[i] * suffixProducts[i]
  * </pre>
  *
- * <p>Example with {@code [1, 2, 3, 4]}:
+ * <p>Example with {@code [2, 3, 4, 5]}:
  * <pre>
  * Index:           0    1    2    3
- * Original:        1    2    3    4
+ * Original:        2    3    4    5
  *
- * prefixProducts:  1    1    2    6
- * suffixProducts: 24   12    4    1
+ * prefixProducts:  1    2    6   24
+ * suffixProducts: 60   20    5    1
  *
- * result:         24   12    8    6
+ * result:         60   40   30   24
  * </pre>
+ *
+ * <p><b>Why prefix and suffix arrays start with 1:</b>
+ * <ul>
+ *   <li>{@code prefixProducts[0] = 1} because there are no elements to the left
+ *       of index 0. Using 1 (the multiplicative identity) means "no contribution"
+ *       — multiplying by 1 doesn't change the result.</li>
+ *   <li>{@code suffixProducts[n-1] = 1} for the same reason: there are no elements
+ *       to the right of the last index.</li>
+ *   <li>Using 0 would break the calculation since any number multiplied by 0 is 0.</li>
+ * </ul>
  *
  * <p>Two implementations are provided:
  *
@@ -47,7 +57,6 @@ package org.example.a_arrays_and_strings;
  * @param nums the input array of integers
  * @return an array where each element is the product of all other elements
  */
-
 public class ProductOfAnArrayExceptSelf {
 
     public int[] productExceptSelf(int[] nums) {
