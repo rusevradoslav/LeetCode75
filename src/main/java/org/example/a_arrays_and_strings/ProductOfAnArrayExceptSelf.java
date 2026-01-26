@@ -16,19 +16,32 @@ package org.example.a_arrays_and_strings;
  * result[i] = prefixProducts[i] * suffixProducts[i]
  * </pre>
  *
- * <p>Time Complexity:
- * O(n), where n is the length of the input array. The array is traversed
- * a constant number of times.
+ * <p>Example with {@code [1, 2, 3, 4]}:
+ * <pre>
+ * Index:           0    1    2    3
+ * Original:        1    2    3    4
  *
- * <p>Space Complexity:
- * O(n), due to the additional prefix and suffix arrays used to store
- * intermediate products.
+ * prefixProducts:  1    1    2    6
+ * suffixProducts: 24   12    4    1
  *
- * <p>Approach:
+ * result:         24   12    8    6
+ * </pre>
+ *
+ * <p>Two implementations are provided:
+ *
+ * <p><b>{@code productExceptSelf}</b> - Standard approach
  * <ul>
- *   <li>Build a prefix product array from left to right.</li>
- *   <li>Build a suffix product array from right to left.</li>
- *   <li>Multiply corresponding prefix and suffix values to form the result.</li>
+ *   <li>Builds separate prefix and suffix arrays</li>
+ *   <li>Time Complexity: O(n) - three passes through the array</li>
+ *   <li>Space Complexity: O(n) - two auxiliary arrays of size n</li>
+ * </ul>
+ *
+ * <p><b>{@code productExceptSelfSpaceOptimized}</b> - Space-optimized approach
+ * <ul>
+ *   <li>Stores prefix products directly in result array</li>
+ *   <li>Computes suffix on the fly using a single running variable</li>
+ *   <li>Time Complexity: O(n) - two passes through the array</li>
+ *   <li>Space Complexity: O(1) extra space, excluding the output array</li>
  * </ul>
  *
  * @param nums the input array of integers
@@ -61,6 +74,23 @@ public class ProductOfAnArrayExceptSelf {
         for (int i = 0; i < nums.length; i++) {
             result[i] = prefixProducts[i] * suffixProducts[i];
         }
+        return result;
+    }
+
+    public int[] productExceptSelfWithBetterSpaceComplexity(int[] nums) {
+        int[] result = new int[nums.length];
+
+        result[0] = 1;
+        for (int i = 1; i < nums.length; i++) {
+            result[i] = result[i - 1] * nums[i - 1];
+        }
+
+        int suffix = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            result[i] *= suffix;
+            suffix *= nums[i];
+        }
+
         return result;
     }
 }
