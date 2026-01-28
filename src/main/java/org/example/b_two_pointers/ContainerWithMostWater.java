@@ -63,7 +63,6 @@ public class ContainerWithMostWater {
             } else {
                 right--;
             }
-
         }
         return maxAmountIfWater;
     }
