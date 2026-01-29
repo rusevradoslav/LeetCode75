@@ -5,7 +5,7 @@ This repository contains Java solutions for the LeetCode 75 study plan. Each sol
 ## Sections
 
 - [Arrays & Strings](#arrays--strings)
-- [Two Pointers](#two-pointers-1)
+- [Two Pointers](#two-pointers)
 - [Sliding Window](#sliding-window)
 - [Prefix Sum](#prefix-sum)
 - [Hash Map / Set](#hash-map--set)
@@ -34,11 +34,11 @@ This repository contains Java solutions for the LeetCode 75 study plan. Each sol
 
 | # | Problem | Difficulty | Time | Space | Pattern |
 |---|---------|------------|------|-------|---------|
-| 1 | [Merge Strings Alternately](#1-merge-strings-alternately) | Easy | O(n+m) | O(n+m) | [Two Pointers](#two-pointers) |
+| 1 | [Merge Strings Alternately](#1-merge-strings-alternately) | Easy | O(n+m) | O(n+m) | [Two Pointers](#two-pointers-1) |
 | 2 | [Greatest Common Divisor of Strings](#2-greatest-common-divisor-of-strings) | Easy | O(n+m) | O(n+m) | [Math (Euclidean Algorithm)](#math-euclidean-algorithm) |
 | 3 | [Kids With the Greatest Number of Candies](#3-kids-with-the-greatest-number-of-candies) | Easy | O(n) | O(n) | [Two-Pass Scan](#two-pass-scan) |
 | 4 | [Can Place Flowers](#4-can-place-flowers) | Easy | O(n) | O(1) | [Greedy](#greedy) |
-| 5 | [Reverse Vowels of a String](#5-reverse-vowels-of-a-string) | Easy | O(n) | O(n) | [Two Pointers](#two-pointers) |
+| 5 | [Reverse Vowels of a String](#5-reverse-vowels-of-a-string) | Easy | O(n) | O(n) | [Two Pointers](#two-pointers-1) |
 | 6 | [Reverse Words in a String](#6-reverse-words-in-a-string) | Medium | O(n) | O(n) | [String Manipulation](#string-manipulation) |
 | 7 | [Product of Array Except Self](#7-product-of-array-except-self) | Medium | O(n) | O(1)* | [Prefix/Suffix](#prefixsuffix) |
 | 8 | [Increasing Triplet Subsequence](#8-increasing-triplet-subsequence) | Medium | O(n) | O(1) | [Greedy](#greedy) |
@@ -58,7 +58,7 @@ This repository contains Java solutions for the LeetCode 75 study plan. Each sol
 
 **Space Complexity:** O(n + m) — StringBuilder holds the combined result.
 
-**Pattern:** [Two Pointers](#two-pointers) — traverse two sequences simultaneously using separate pointers.
+**Pattern:** [Two Pointers](#two-pointers-1) — traverse two sequences simultaneously using separate pointers.
 
 **Key Insight:** No length comparison needed — the OR condition and two separate if statements naturally handle strings of any length.
 
@@ -176,7 +176,7 @@ return n <= 0;
 
 **Space Complexity:** O(n) — char array to allow swapping.
 
-**Pattern:** [Two Pointers](#two-pointers) — traverse from opposite ends, swapping when conditions are met.
+**Pattern:** [Two Pointers](#two-pointers-1) — traverse from opposite ends, swapping when conditions are met.
 
 **Key Insight:** Use else-if to ensure only one action per iteration — either swap, move left, or move right.
 
@@ -402,6 +402,145 @@ return result
 
 ---
 
+## Two Pointers
+
+### Quick Reference
+
+| # | Problem | Difficulty | Time | Space | Pattern |
+|---|---------|------------|------|-------|---------|
+| 1 | [Move Zeroes](#1-move-zeroes) | Easy | O(n) | O(1) | [Slow/Fast Pointers](#slowfast-pointers) |
+| 2 | [Is Subsequence](#2-is-subsequence) | Easy | O(n) | O(1) | [Slow/Fast Pointers](#slowfast-pointers) |
+| 3 | [Container With Most Water](#3-container-with-most-water) | Medium | O(n) | O(1) | [Two Pointers (Opposite Ends)](#two-pointers-1) |
+| 4 | [Max Number of K-Sum Pairs](#4-max-number-of-k-sum-pairs) | Medium | O(n log n) | O(1) | [Two Pointers (Opposite Ends)](#two-pointers-1) |
+
+---
+
+### 1. Move Zeroes
+
+**Approach:** Use slow/fast two-pointer technique. Slow pointer tracks where the next non-zero element should go. Fast pointer scans for non-zero elements to swap.
+
+**Time Complexity:** O(n) — each element visited exactly once.
+
+**Space Complexity:** O(1) — in-place swapping.
+
+**Pattern:** [Slow/Fast Pointers](#slowfast-pointers) — slow marks placement position, fast scans ahead.
+
+**Key Insight:** When fast finds a non-zero, swap it with slow's position. This naturally pushes zeros to the end while maintaining order.
+
+**Code:**
+```java
+int slow = 0, fast = 0;
+
+while (fast < nums.length) {
+    if (nums[fast] != 0) {
+        int temp = nums[slow];
+        nums[slow] = nums[fast];
+        nums[fast] = temp;
+        slow++;
+    }
+    fast++;
+}
+```
+
+---
+
+### 2. Is Subsequence
+
+**Approach:** Use two pointers — one for the subsequence string, one for the source string. When characters match, advance both; otherwise advance only the source pointer.
+
+**Time Complexity:** O(n) — where n is the length of the source string t.
+
+**Space Complexity:** O(1) — only pointer variables.
+
+**Pattern:** [Slow/Fast Pointers](#slowfast-pointers) — subsequence pointer only moves on match, source pointer always moves.
+
+**Key Insight:** We don't need to track matches separately — if the subsequence pointer reaches the end, all characters were found in order.
+
+**Code:**
+```java
+int sIndex = 0, tIndex = 0;
+
+while (sIndex < s.length() && tIndex < t.length()) {
+    if (s.charAt(sIndex) == t.charAt(tIndex)) {
+        sIndex++;
+    }
+    tIndex++;
+}
+
+return sIndex == s.length();
+```
+
+---
+
+### 3. Container With Most Water
+
+**Approach:** Start with pointers at both ends (maximum width). Calculate area, then move the pointer pointing to the shorter line inward — keeping the shorter line can never increase area.
+
+**Time Complexity:** O(n) — each element visited at most once.
+
+**Space Complexity:** O(1) — only pointer and max variables.
+
+**Pattern:** [Two Pointers (Opposite Ends)](#two-pointers-1) — start wide, narrow based on which side limits the area.
+
+**Key Insight:** Water is limited by the shorter line. Moving the taller line inward can only decrease width with no chance of increasing height. Moving the shorter line might find a taller one.
+
+**Code:**
+```java
+int left = 0, right = height.length - 1;
+int maxArea = 0;
+
+while (left < right) {
+    int width = right - left;
+    int minHeight = Math.min(height[left], height[right]);
+    maxArea = Math.max(maxArea, width * minHeight);
+
+    if (height[left] < height[right]) {
+        left++;
+    } else {
+        right--;
+    }
+}
+
+return maxArea;
+```
+
+---
+
+### 4. Max Number of K-Sum Pairs
+
+**Approach:** Sort the array first. Use two pointers from opposite ends. If sum equals k, count the pair and move both pointers. If sum is too small, move left pointer right. If sum is too large, move right pointer left.
+
+**Time Complexity:** O(n log n) — dominated by sorting.
+
+**Space Complexity:** O(1) — or O(n) depending on sort implementation.
+
+**Pattern:** [Two Pointers (Opposite Ends)](#two-pointers-1) — after sorting, adjust pointers based on sum comparison.
+
+**Key Insight:** Sorting enables the two-pointer approach. Too small? Need bigger numbers (move left). Too big? Need smaller numbers (move right).
+
+**Code:**
+```java
+Arrays.sort(nums);
+int count = 0, left = 0, right = nums.length - 1;
+
+while (left < right) {
+    int sum = nums[left] + nums[right];
+    if (sum == k) {
+        count++;
+        left++;
+        right--;
+    } else if (sum < k) {
+        left++;
+    } else {
+        right--;
+    }
+}
+
+return count;
+```
+
+---
+
 ## Key Patterns
 
 ### Two Pointers
@@ -423,6 +562,26 @@ while (left < right) {
     } else {
         right--;
     }
+}
+```
+
+---
+
+### Slow/Fast Pointers
+
+**When to use:** In-place array modifications, finding subsequences, or cycle detection.
+
+**How it works:** Slow pointer marks a position (placement or match), fast pointer scans ahead. They move at different rates based on conditions.
+
+**Template:**
+```java
+int slow = 0, fast = 0;
+while (fast < arr.length) {
+    if (condition(arr[fast])) {
+        // process at slow position
+        slow++;
+    }
+    fast++;
 }
 ```
 
