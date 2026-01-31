@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/github/rusevradoslav/LeetCode75/graph/badge.svg?token=LG0zNafid5)](https://codecov.io/github/rusevradoslav/LeetCode75)
+
 # LeetCode 75: Java Solutions
 
 This repository contains Java solutions for the LeetCode 75 study plan. Each solution includes documented code with time and space complexity analysis.
