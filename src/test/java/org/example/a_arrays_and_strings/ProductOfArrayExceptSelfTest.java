@@ -22,6 +22,7 @@ class ProductOfArrayExceptSelfTest {
         int[] expected = {24, 12, 8, 6};
 
         assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelf(nums));
+        assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelfWithBetterSpaceComplexity(nums));
     }
 
     @Test
@@ -31,6 +32,7 @@ class ProductOfArrayExceptSelfTest {
         int[] expected = {0, 0, 8, 0};
 
         assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelf(nums));
+        assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelfWithBetterSpaceComplexity(nums));
     }
 
     @Test
@@ -40,6 +42,7 @@ class ProductOfArrayExceptSelfTest {
         int[] expected = {0, 0, 0, 0};
 
         assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelf(nums));
+        assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelfWithBetterSpaceComplexity(nums));
     }
 
     @Test
@@ -49,6 +52,7 @@ class ProductOfArrayExceptSelfTest {
         int[] expected = {-9, 9, -3, 3};
 
         assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelf(nums));
+        assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelfWithBetterSpaceComplexity(nums));
     }
 
     @Test
@@ -58,6 +62,7 @@ class ProductOfArrayExceptSelfTest {
         int[] expected = {10, 5};
 
         assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelf(nums));
+        assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelfWithBetterSpaceComplexity(nums));
     }
 
     @Test
@@ -67,6 +72,7 @@ class ProductOfArrayExceptSelfTest {
         int[] expected = {8, 8, 8, 8};
 
         assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelf(nums));
+        assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelfWithBetterSpaceComplexity(nums));
     }
 
     @Test
@@ -86,5 +92,6 @@ class ProductOfArrayExceptSelfTest {
         int[] expected = {30, 100, 60, 150};
 
         assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelf(nums));
+        assertArrayEquals(expected, productOfAnArrayExceptSelf.productExceptSelfWithBetterSpaceComplexity(nums));
     }
 }
