@@ -126,15 +126,15 @@ int gcd(int a, int b) {
 ```java
 int maxCandies = 0;
 for (int candy : candies) {
-    maxCandies = Math.max(maxCandies, candy);
+maxCandies = Math.max(maxCandies, candy);
 }
 
 List<Boolean> result = new ArrayList<>();
 for (int candy : candies) {
-    result.add(candy + extraCandies >= maxCandies);
+        result.add(candy + extraCandies >= maxCandies);
 }
 
-return result;
+        return result;
 ```
 
 ---
@@ -687,6 +687,76 @@ return maxLength;
 
 ---
 
+## Prefix Sum
+
+### Quick Reference
+
+| # | Problem | Difficulty | Time | Space | Pattern |
+|---|---------|------------|------|-------|---------|
+| 1 | [Find the Highest Altitude](#1-find-the-highest-altitude) | Easy | O(n) | O(1) | [Running Prefix Sum](#running-prefix-sum) |
+| 2 | [Find Pivot Index](#2-find-pivot-index) | Easy | O(n) | O(1) | [Running Prefix Sum](#running-prefix-sum) |
+
+---
+
+### 1. Find the Highest Altitude
+
+**Approach:** Maintain a running prefix sum representing the current altitude. Track the maximum altitude seen. Compare with starting altitude 0.
+
+**Time Complexity:** O(n) — single pass through the array.
+
+**Space Complexity:** O(1) for optimized version, O(n) for explicit array version.
+
+**Pattern:** [Running Prefix Sum](#running-prefix-sum) — accumulate values while tracking a result.
+
+**Key Insight:** We don't need to store all altitudes — just track the running sum and maximum. Don't forget to compare with starting altitude 0.
+
+**Code:**
+```java
+int maxAltitude = 0;
+int currentAltitude = 0;
+
+for (int gain : gains) {
+    currentAltitude += gain;
+    maxAltitude = Math.max(maxAltitude, currentAltitude);
+}
+
+return maxAltitude;
+```
+
+---
+
+### 2. Find Pivot Index
+
+**Approach:** Compute total sum first. Then iterate while maintaining left sum. Right sum = totalSum - leftSum - nums[i]. Return index when they're equal.
+
+**Time Complexity:** O(n) — two passes through the array.
+
+**Space Complexity:** O(1) for optimized version, O(n) for dual array version.
+
+**Pattern:** [Running Prefix Sum](#running-prefix-sum) — use total sum to derive right sum from left sum.
+
+**Key Insight:** Instead of building two arrays, use the formula: `rightSum = totalSum - leftSum - nums[i]`. Update leftSum *after* the comparison.
+
+**Code:**
+```java
+int totalSum = 0;
+for (int num : nums) {
+    totalSum += num;
+}
+
+int leftSum = 0;
+for (int i = 0; i < nums.length; i++) {
+    if (leftSum == totalSum - leftSum - nums[i]) {
+        return i;
+    }
+    leftSum += nums[i];
+}
+
+return -1;
+```
+
+---
+
 ## Key Patterns
 
 ### Two Pointers
@@ -776,6 +846,25 @@ for (int right = 0; right < arr.length; right++) {
     
     // window is valid, update result
     result = Math.max(result, right - left + 1);
+}
+```
+
+---
+
+### Running Prefix Sum
+
+**When to use:** Problems involving cumulative sums, altitude changes, or finding balance points.
+
+**How it works:** Maintain a running total as you iterate. Use it to compute results without storing all intermediate values.
+
+**Template:**
+```java
+int prefixSum = 0;
+int result = 0;
+
+for (int num : nums) {
+    prefixSum += num;
+    result = Math.max(result, prefixSum);
 }
 ```
 
