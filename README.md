@@ -541,6 +541,152 @@ return count;
 
 ---
 
+## Sliding Window
+
+### Quick Reference
+
+| # | Problem | Difficulty | Time | Space | Pattern |
+|---|---------|------------|------|-------|---------|
+| 1 | [Maximum Average Subarray I](#1-maximum-average-subarray-i) | Easy | O(n) | O(1) | [Fixed-Size Sliding Window](#fixed-size-sliding-window) |
+| 2 | [Maximum Number of Vowels in a Substring of Given Length](#2-maximum-number-of-vowels-in-a-substring-of-given-length) | Medium | O(n) | O(1) | [Fixed-Size Sliding Window](#fixed-size-sliding-window) |
+| 3 | [Max Consecutive Ones III](#3-max-consecutive-ones-iii) | Medium | O(n) | O(1) | [Variable-Size Sliding Window](#variable-size-sliding-window) |
+| 4 | [Longest Subarray of 1's After Deleting One Element](#4-longest-subarray-of-1s-after-deleting-one-element) | Medium | O(n) | O(1) | [Variable-Size Sliding Window](#variable-size-sliding-window) |
+
+---
+
+### 1. Maximum Average Subarray I
+
+**Approach:** Calculate the sum of the first k elements. Then slide the window: add the entering element, subtract the leaving element. Track the maximum sum.
+
+**Time Complexity:** O(n) — each element visited at most twice.
+
+**Space Complexity:** O(1) — only a few variables.
+
+**Pattern:** [Fixed-Size Sliding Window](#fixed-size-sliding-window) — window size stays constant at k.
+
+**Key Insight:** Instead of recalculating sum for each window (O(k) per window), reuse the previous sum: `new_sum = old_sum - leaving + entering`. This reduces each window calculation to O(1).
+
+**Code:**
+```java
+double windowSum = 0;
+for (int i = 0; i < k; i++) {
+    windowSum += nums[i];
+}
+
+double maxSum = windowSum;
+for (int i = k; i < nums.length; i++) {
+    windowSum += nums[i] - nums[i - k];
+    maxSum = Math.max(maxSum, windowSum);
+}
+
+return maxSum / k;
+```
+
+---
+
+### 2. Maximum Number of Vowels in a Substring of Given Length
+
+**Approach:** Count vowels in the first window. Then slide: increment count if entering char is a vowel, decrement if leaving char is a vowel. Track maximum.
+
+**Time Complexity:** O(n) — each character visited at most twice.
+
+**Space Complexity:** O(1) — only counter variables.
+
+**Pattern:** [Fixed-Size Sliding Window](#fixed-size-sliding-window) — window size stays constant at k.
+
+**Key Insight:** Same principle as Maximum Average — maintain a running count instead of recounting vowels for each window.
+
+**Code:**
+```java
+int vowelCount = 0;
+for (int i = 0; i < k; i++) {
+    if (isVowel(s.charAt(i))) vowelCount++;
+}
+
+int maxCount = vowelCount;
+for (int i = k; i < s.length(); i++) {
+    if (isVowel(s.charAt(i))) vowelCount++;
+    if (isVowel(s.charAt(i - k))) vowelCount--;
+    maxCount = Math.max(maxCount, vowelCount);
+}
+
+return maxCount;
+```
+
+---
+
+### 3. Max Consecutive Ones III
+
+**Approach:** Reframe as "find the longest subarray with at most k zeros". Expand window with right pointer. When zero count exceeds k, shrink from left until valid.
+
+**Time Complexity:** O(n) — each element visited at most twice (once by right, once by left).
+
+**Space Complexity:** O(1) — only a few variables.
+
+**Pattern:** [Variable-Size Sliding Window](#variable-size-sliding-window) — window expands and shrinks based on constraint.
+
+**Key Insight:** We don't actually flip zeros — we just find a window where zero count is ≤ k. The window length is the answer.
+
+**Code:**
+```java
+int left = 0, maxLength = 0, zeroCount = 0;
+
+for (int right = 0; right < nums.length; right++) {
+    if (nums[right] == 0) {
+        zeroCount++;
+    }
+
+    while (zeroCount > k) {
+        if (nums[left] == 0) {
+            zeroCount--;
+        }
+        left++;
+    }
+
+    maxLength = Math.max(maxLength, right - left + 1);
+}
+
+return maxLength;
+```
+
+---
+
+### 4. Longest Subarray of 1's After Deleting One Element
+
+**Approach:** Reframe as "find the longest subarray with at most 1 zero". Since we must delete one element, the result is window length minus 1 (use `right - left` instead of `right - left + 1`).
+
+**Time Complexity:** O(n) — each element visited at most twice.
+
+**Space Complexity:** O(1) — only a few variables.
+
+**Pattern:** [Variable-Size Sliding Window](#variable-size-sliding-window) — same as Max Consecutive Ones but with k=1 and mandatory deletion.
+
+**Key Insight:** This is Max Consecutive Ones III with k=1, but we must delete exactly one element. Using `right - left` instead of `right - left + 1` accounts for the mandatory deletion.
+
+**Code:**
+```java
+int left = 0, maxLength = 0, zeroCount = 0;
+
+for (int right = 0; right < nums.length; right++) {
+    if (nums[right] == 0) {
+        zeroCount++;
+    }
+
+    if (zeroCount <= 1) {
+        maxLength = Math.max(maxLength, right - left);
+    } else {
+        if (nums[left] == 0) {
+            zeroCount--;
+        }
+        left++;
+    }
+}
+
+return maxLength;
+```
+
+---
+
 ## Key Patterns
 
 ### Two Pointers
@@ -582,6 +728,54 @@ while (fast < arr.length) {
         slow++;
     }
     fast++;
+}
+```
+
+---
+
+### Fixed-Size Sliding Window
+
+**When to use:** Find maximum/minimum/count in all subarrays of size k.
+
+**How it works:** Initialize window with first k elements. Slide by adding entering element and removing leaving element. Track result across all positions.
+
+**Template:**
+```java
+// Initialize first window
+int windowValue = 0;
+for (int i = 0; i < k; i++) {
+    windowValue += arr[i];
+}
+
+int result = windowValue;
+for (int i = k; i < arr.length; i++) {
+    windowValue += arr[i] - arr[i - k];  // add entering, remove leaving
+    result = Math.max(result, windowValue);
+}
+```
+
+---
+
+### Variable-Size Sliding Window
+
+**When to use:** Find longest/shortest subarray satisfying a condition.
+
+**How it works:** Expand window with right pointer. When constraint is violated, shrink from left until valid. Track result when window is valid.
+
+**Template:**
+```java
+int left = 0, result = 0;
+
+for (int right = 0; right < arr.length; right++) {
+    // expand: add arr[right] to window state
+    
+    while (/* window is invalid */) {
+        // shrink: remove arr[left] from window state
+        left++;
+    }
+    
+    // window is valid, update result
+    result = Math.max(result, right - left + 1);
 }
 ```
 
