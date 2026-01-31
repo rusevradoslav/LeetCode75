@@ -29,15 +29,12 @@ package org.example.a_arrays_and_strings;
  */
 
 public class ReverseWordsInAString {
-
     public String reverseWords(String s) {
         String[] words = s.trim().split("\\s+");
         StringBuilder sb = new StringBuilder();
         for (int i = words.length - 1; i >= 0; i--) {
-            if (i > 0) {
-                sb.append(' ');
-            }
+            sb.append(words[i]).append(' ');
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 }

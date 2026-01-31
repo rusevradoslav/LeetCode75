@@ -108,7 +108,7 @@ class MaxConsecutiveOnesIIITest {
     @Test
     @DisplayName("Two separate groups of ones")
     void longestOnes_twoGroups() {
-        assertEquals(5, maxConsecutiveOnesIII.longestOnes(new int[]{1, 1, 0, 0, 0, 1, 1}, 1));
+        assertEquals(3, maxConsecutiveOnesIII.longestOnes(new int[]{1, 1, 0, 0, 0, 1, 1}, 1));
     }
 
     @Test
