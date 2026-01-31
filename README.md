@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/github/rusevradoslav/LeetCode75/graph/badge.svg?token=LG0zNafid5)](https://codecov.io/github/rusevradoslav/LeetCode75)
+![CI](https://github.com/rusevradoslav/LeetCode75/actions/workflows/ci.yml/badge.svg)
 
 # LeetCode 75: Java Solutions
 
