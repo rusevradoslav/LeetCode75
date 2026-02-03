@@ -760,6 +760,199 @@ return -1;
 
 ---
 
+## Hash Map / Set
+
+### Quick Reference
+
+| # | Problem | Difficulty | Time | Space | Pattern |
+|---|---------|------------|------|-------|---------|
+| 1 | [Find the Difference of Two Arrays](#1-find-the-difference-of-two-arrays) | Easy | O(n+m) | O(n+m) | [Set Difference](#set-difference) |
+| 2 | [Unique Number of Occurrences](#2-unique-number-of-occurrences) | Easy | O(n) | O(k) | [Frequency Map](#frequency-map) |
+| 3 | [Determine If Two Strings Are Close](#3-determine-if-two-strings-are-close) | Medium | O(n + k log k) | O(k) | [Frequency Distribution](#frequency-distribution) |
+| 4 | [Determine If Two Strings Are Close (Optimized)](#4-determine-if-two-strings-are-close-optimized) | Medium | O(n) | O(1) | [Frequency Distribution](#frequency-distribution) |
+| 5 | [Equal Row and Column Pairs](#5-equal-row-and-column-pairs) | Medium | O(n²) | O(n²) | [Hashing Rows/Columns](#hashing-rowscolumns) |
+
+---
+
+### 1. Find the Difference of Two Arrays
+
+**Approach:** Convert both arrays to sets to remove duplicates. Remove elements found in the opposite set to get each side's unique values.
+
+**Time Complexity:** O(n + m) — building sets and removing elements is linear with hash lookups.
+
+**Space Complexity:** O(n + m) — stores both sets and result lists.
+
+**Pattern:** [Set Difference](#set-difference) — compute elements present in one set but not the other.
+
+**Key Insight:** Once in sets, `removeAll` does exactly the difference we need.
+
+**Code:**
+```java
+Set<Integer> first = new HashSet<>();
+for (int num : nums1) {
+    first.add(num);
+}
+
+Set<Integer> second = new HashSet<>();
+for (int num : nums2) {
+    second.add(num);
+}
+
+List<Integer> onlyFirst = new ArrayList<>(first);
+onlyFirst.removeAll(second);
+
+List<Integer> onlySecond = new ArrayList<>(second);
+onlySecond.removeAll(first);
+
+return List.of(onlyFirst, onlySecond);
+```
+
+---
+
+### 2. Unique Number of Occurrences
+
+**Approach:** Count occurrences with a map. If the number of distinct counts equals the number of keys, all counts are unique.
+
+**Time Complexity:** O(n) — single pass for counts plus distinct check on the map values.
+
+**Space Complexity:** O(k) — k is the number of distinct values.
+
+**Pattern:** [Frequency Map](#frequency-map) — count how many times each value appears.
+
+**Key Insight:** Uniqueness of counts is equivalent to “map size == distinct count values”.
+
+**Code:**
+```java
+Map<Integer, Integer> counts = new HashMap<>();
+for (int num : arr) {
+    counts.put(num, counts.getOrDefault(num, 0) + 1);
+}
+
+long distinctCounts = counts.values().stream().distinct().count();
+return counts.size() == distinctCounts;
+```
+
+---
+
+### 3. Determine If Two Strings Are Close
+
+**Approach:** Build frequency maps for both words. They are close if they use the same character set and their sorted frequency lists are identical.
+
+**Time Complexity:** O(n + k log k) — counting is O(n), sorting frequencies is O(k log k).
+
+**Space Complexity:** O(k) — for the frequency maps and lists.
+
+**Pattern:** [Frequency Distribution](#frequency-distribution) — compare multiset of counts after validating the character set.
+
+**Key Insight:** Operation 1 permutes positions, operation 2 swaps counts between characters — so only the character set and count multiset matter.
+
+**Code:**
+```java
+if (word1.length() != word2.length()) {
+    return false;
+}
+
+Map<Character, Integer> map1 = new HashMap<>();
+for (char ch : word1.toCharArray()) {
+    map1.put(ch, map1.getOrDefault(ch, 0) + 1);
+}
+
+Map<Character, Integer> map2 = new HashMap<>();
+for (char ch : word2.toCharArray()) {
+    map2.put(ch, map2.getOrDefault(ch, 0) + 1);
+}
+
+if (!map1.keySet().equals(map2.keySet())) {
+    return false;
+}
+
+List<Integer> f1 = new ArrayList<>(map1.values());
+List<Integer> f2 = new ArrayList<>(map2.values());
+Collections.sort(f1);
+Collections.sort(f2);
+
+return f1.equals(f2);
+```
+
+---
+
+### 4. Determine If Two Strings Are Close (Optimized)
+
+**Approach:** Use fixed-size arrays of length 26 to count character frequencies. Verify the same character set and compare sorted arrays.
+
+**Time Complexity:** O(n) — counting is linear; sorting 26-length arrays is O(1).
+
+**Space Complexity:** O(1) — constant-size arrays.
+
+**Pattern:** [Frequency Distribution](#frequency-distribution) — same logic as above with fixed alphabet.
+
+**Key Insight:** For lowercase letters, arrays replace maps and shrink both time constants and memory.
+
+**Code:**
+```java
+if (word1.length() != word2.length()) {
+    return false;
+}
+
+int[] freq1 = new int[26];
+int[] freq2 = new int[26];
+
+for (char ch : word1.toCharArray()) {
+    freq1[ch - 'a']++;
+}
+for (char ch : word2.toCharArray()) {
+    freq2[ch - 'a']++;
+}
+
+for (int i = 0; i < 26; i++) {
+    if ((freq1[i] == 0) != (freq2[i] == 0)) {
+        return false;
+    }
+}
+
+Arrays.sort(freq1);
+Arrays.sort(freq2);
+return Arrays.equals(freq1, freq2);
+```
+
+---
+
+### 5. Equal Row and Column Pairs
+
+**Approach:** Convert each row into a `List<Integer>` and count how many times it appears. Then build each column as a list and look it up in the map, adding its frequency.
+
+**Time Complexity:** O(n²) — build all row and column representations across n² cells.
+
+**Space Complexity:** O(n²) — store n row lists of length n in the map.
+
+**Pattern:** [Hashing Rows/Columns](#hashing-rowscolumns) — normalize rows/columns into hashable keys and count.
+
+**Key Insight:** A column can match multiple identical rows; storing row frequencies lets each column contribute the right count.
+
+**Code:**
+```java
+Map<List<Integer>, Integer> counts = new HashMap<>();
+
+for (int[] row : grid) {
+    List<Integer> key = Arrays.stream(row).boxed().toList();
+    counts.put(key, counts.getOrDefault(key, 0) + 1);
+}
+
+int result = 0;
+for (int i = 0; i < grid.length; i++) {
+    int[] col = new int[grid.length];
+    for (int j = 0; j < grid.length; j++) {
+        col[j] = grid[j][i];
+    }
+    List<Integer> key = Arrays.stream(col).boxed().toList();
+    result += counts.getOrDefault(key, 0);
+}
+
+return result;
+```
+
+---
+
 ## Key Patterns
 
 ### Two Pointers
@@ -991,6 +1184,98 @@ for (String part : parts) {
     // transform and append
 }
 return result.toString();
+```
+
+---
+
+### Frequency Map
+
+**When to use:** Counting occurrences or grouping by value/character.
+
+**How it works:** Use a hash map where keys are values/characters and values are counts. Update with `getOrDefault`.
+
+**Template:**
+```java
+Map<Integer, Integer> counts = new HashMap<>();
+for (int num : nums) {
+    counts.put(num, counts.getOrDefault(num, 0) + 1);
+}
+```
+
+---
+
+### Set Difference
+
+**When to use:** Finding elements that appear in one collection but not another.
+
+**How it works:** Convert inputs to sets to remove duplicates, then remove all elements from the opposite set.
+
+**Template:**
+```java
+Set<Integer> first = new HashSet<>(List.of(/* values */));
+Set<Integer> second = new HashSet<>(List.of(/* values */));
+
+List<Integer> onlyFirst = new ArrayList<>(first);
+onlyFirst.removeAll(second);
+```
+
+---
+
+### Frequency Distribution
+
+**When to use:** Comparing strings or arrays by the multiset of their counts rather than exact positions.
+
+**How it works:** Build frequency counts, ensure the same key set, then sort and compare the list/array of counts.
+
+**Template:**
+```java
+int[] freq1 = new int[26];
+int[] freq2 = new int[26];
+
+for (char ch : word1.toCharArray()) {
+    freq1[ch - 'a']++;
+}
+for (char ch : word2.toCharArray()) {
+    freq2[ch - 'a']++;
+}
+
+for (int i = 0; i < 26; i++) {
+    if ((freq1[i] == 0) != (freq2[i] == 0)) {
+        return false;
+    }
+}
+
+Arrays.sort(freq1);
+Arrays.sort(freq2);
+return Arrays.equals(freq1, freq2);
+```
+
+---
+
+### Hashing Rows/Columns
+
+**When to use:** Comparing whole rows/columns or fixed-length sequences where order matters.
+
+**How it works:** Convert each row/column into a hashable key (list or string). Count rows in a map, then build each column key and add its row frequency.
+
+**Template:**
+```java
+Map<List<Integer>, Integer> counts = new HashMap<>();
+
+for (int[] row : grid) {
+    List<Integer> key = Arrays.stream(row).boxed().toList();
+    counts.put(key, counts.getOrDefault(key, 0) + 1);
+}
+
+int result = 0;
+for (int c = 0; c < grid.length; c++) {
+    int[] col = new int[grid.length];
+    for (int r = 0; r < grid.length; r++) {
+        col[r] = grid[r][c];
+    }
+    List<Integer> key = Arrays.stream(col).boxed().toList();
+    result += counts.getOrDefault(key, 0);
+}
 ```
 
 ---
