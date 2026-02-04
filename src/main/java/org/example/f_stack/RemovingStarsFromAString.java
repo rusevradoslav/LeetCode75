@@ -1,19 +1,18 @@
 package org.example.f_stack;
 
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Removes stars from a string by deleting each star and the closest non-star
  * character to its left.
  *
- * <p>Solution 1 (Stack / LinkedList):
+ * <p>Solution 1 (Stack / ArrayDeque):
  * <ul>
- *   <li>Use a {@code LinkedList} as a stack with a last-in-first-out (LIFO) policy</li>
- *   <li>Append characters to the tail; on '*', remove from the tail</li>
- *   <li>Using the tail keeps the list in left-to-right order, so no reversal is needed</li>
- *   <li>Build the final string from the remaining list</li>
+ *   <li>Use an {@code ArrayDeque} as a stack with a last-in-first-out (LIFO) policy</li>
+ *   <li>Push letters; on '*', pop the most recent character</li>
+ *   <li>Build the final string by removing from the tail to restore left-to-right order</li>
  * </ul>
  *
  * <p>Solution 2 (StringBuilder as a stack):
@@ -43,18 +42,19 @@ import java.util.LinkedList;
 public class RemovingStarsFromAString {
 
     public String removeStars(String string) {
-        char[] charArray = string.toCharArray();
-        LinkedList<Character> charactersStacks = new LinkedList<>();
-        for (char character : charArray) {
+        Deque<Character> stack = new ArrayDeque<>();
+        for (char character : string.toCharArray()) {
             if (character == '*') {
-                charactersStacks.pollLast();
+                stack.pop();
             } else {
-                charactersStacks.add(character);
+                stack.push(character);
             }
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        charactersStacks.forEach(stringBuilder::append);
+        while (!stack.isEmpty()) {
+            stringBuilder.append(stack.removeLast());
+        }
 
         return stringBuilder.toString();
     }
