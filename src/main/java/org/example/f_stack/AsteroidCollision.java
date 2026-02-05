@@ -65,11 +65,8 @@ public class AsteroidCollision {
             stack.add(incomingAsteroid);
         }
 
-        int[] result = new int[stack.size()];
-        for (int i = 0; i < stack.size(); i++) {
-            result[i] = stack.pollLast();
-        }
-
-        return result;
+        return stack.stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
     }
 }
