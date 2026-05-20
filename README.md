@@ -1929,6 +1929,53 @@ private boolean validate(TreeNode node, Integer min, Integer max) {
 
 ---
 
+## Graphs - DFS
+
+### Quick Reference
+
+| # | Problem | Difficulty | Time | Space | Pattern |
+|---|---------|------------|------|-------|---------|
+| 1 | [Keys and Rooms](#1-keys-and-rooms) | Medium | O(V + E) | O(V) | [Graph DFS](#graph-dfs) |
+
+---
+
+### 1. Keys and Rooms
+
+**Approach:** Model rooms as graph nodes and keys as directed edges. Start a DFS from room 0, tracking visited room numbers in a `HashSet`. After the traversal, compare the visited count to the total number of rooms.
+
+**Time Complexity:** O(V + E) — each room visited once, each key processed once.
+
+**Space Complexity:** O(V) — visited set and recursive call stack each hold at most V entries.
+
+**Pattern:** [Graph DFS](#graph-dfs) — traverse reachability from a fixed source; use a visited set to handle cycles.
+
+**Key Insight:** The input is already an adjacency list — no need to build a separate graph structure. Room index = node, keys in that room = outgoing edges.
+
+**Code:**
+```java
+public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+    Set<Integer> visitedRooms = new HashSet<>();
+    visitRooms(rooms, 0, visitedRooms);
+    return visitedRooms.size() == rooms.size();
+}
+
+private void visitRooms(List<List<Integer>> rooms, Integer key, Set<Integer> visitedRooms) {
+    if (visitedRooms.contains(key)) {
+        return;
+    }
+    visitedRooms.add(key);
+    rooms.get(key).forEach(room -> visitRooms(rooms, room, visitedRooms));
+}
+```
+
+---
+
+## Graphs - BFS
+
+> No problems solved yet.
+
+---
+
 ## Key Patterns
 
 ### BFS Level-Order
