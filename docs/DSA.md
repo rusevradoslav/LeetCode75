@@ -21,6 +21,7 @@
   - [Data Structures for Graphs](#data-structures-for-graphs)
   - [Graph Traversals](#graph-traversals)
     - [Depth-First Search (DFS)](#depth-first-search-dfs)
+      - [Iterative DFS](#iterative-dfs)
     - [Breadth-First Search (BFS)](#breadth-first-search-bfs)
     - [DFS vs BFS](#dfs-vs-bfs)
     - [Path Reconstruction](#path-reconstruction)
@@ -1432,6 +1433,44 @@ Visit order: Alice → Bob → Carol → Dan.
 | Space complexity | O(n) — visited set + call stack |
 | Path reconstructed via `constructPath` | Some path (not necessarily shortest) |
 | Best for | Cycle detection, topological sort, connected components |
+
+**Iterative DFS**
+
+Replaces the JVM call stack with an explicit `Deque` used as a stack (LIFO). Eliminates `StackOverflowError` risk on deep graphs while preserving depth-first order.
+
+The key distinction from BFS: use `push`/`pop` (LIFO) instead of `offer`/`poll` (FIFO). Everything else is identical.
+
+```java
+public Map<Vertex<V, E>, Edge<V, E>> traverseIterative(Graph<V, E> graph, Vertex<V, E> start) {
+    Map<Vertex<V, E>, Edge<V, E>> forest = new HashMap<>();
+    Set<Vertex<V, E>> visited = new HashSet<>();
+    Deque<Vertex<V, E>> stack = new ArrayDeque<>();
+
+    visited.add(start);
+    stack.push(start);
+
+    while (!stack.isEmpty()) {
+        Vertex<V, E> vertex = stack.pop();
+        for (Edge<V, E> edge : graph.getOutgoingEdges(vertex)) {
+            Vertex<V, E> destination = graph.opposite(vertex, edge);
+            if (visited.contains(destination)) {
+                continue;
+            }
+            visited.add(destination);
+            stack.push(destination);
+            forest.put(destination, edge);
+        }
+    }
+    return forest;
+}
+```
+
+| Aspect | Recursive | Iterative |
+|---|---|---|
+| Stack | JVM call stack (implicit) | `Deque` (explicit) |
+| Risk | `StackOverflowError` on deep graphs | None |
+| Code complexity | Simpler | Slightly more verbose |
+| Result | Identical discovery forest | Identical discovery forest |
 
 ---
 
