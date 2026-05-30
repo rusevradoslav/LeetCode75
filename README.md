@@ -1936,6 +1936,7 @@ private boolean validate(TreeNode node, Integer min, Integer max) {
 | # | Problem | Difficulty | Time | Space | Pattern |
 |---|---------|------------|------|-------|---------|
 | 1 | [Keys and Rooms](#1-keys-and-rooms) | Medium | O(V + E) | O(V) | [Graph DFS](#graph-dfs) |
+| 2 | [Number of Provinces](#2-number-of-provinces) | Medium | O(n²) | O(n) | [Graph DFS](#graph-dfs) |
 
 ---
 
@@ -1965,6 +1966,44 @@ private void visitRooms(List<List<Integer>> rooms, Integer key, Set<Integer> vis
     }
     visitedRooms.add(key);
     rooms.get(key).forEach(room -> visitRooms(rooms, room, visitedRooms));
+}
+```
+
+---
+
+### 2. Number of Provinces
+
+**Approach:** Treat the adjacency matrix as a graph and count connected components via DFS. For each unvisited city, start a DFS that marks every city in the same province as visited — each such start is one province.
+
+**Time Complexity:** O(n²) — every cell of the n×n matrix is visited once.
+
+**Space Complexity:** O(n) — visited array and recursive call stack each hold at most n entries.
+
+**Pattern:** [Graph DFS](#graph-dfs) — count connected components; one DFS per unvisited node = one component.
+
+**Key Insight:** The input is already an adjacency matrix — no need to build a separate graph. Row i = node i, `isConnected[i][j] == 1` = edge between i and j.
+
+**Code:**
+```java
+public int findCircleNum(int[][] isConnected) {
+    boolean[] visited = new boolean[isConnected.length];
+    int count = 0;
+    for (int i = 0; i < isConnected.length; i++) {
+        if (!visited[i]) {
+            dfs(i, isConnected, visited);
+            count++;
+        }
+    }
+    return count;
+}
+
+private void dfs(int i, int[][] isConnected, boolean[] visited) {
+    visited[i] = true;
+    for (int j = 0; j < isConnected.length; j++) {
+        if (!visited[j] && isConnected[i][j] == 1) {
+            dfs(j, isConnected, visited);
+        }
+    }
 }
 ```
 
