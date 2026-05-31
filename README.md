@@ -1937,6 +1937,7 @@ private boolean validate(TreeNode node, Integer min, Integer max) {
 |---|---------|------------|------|-------|---------|
 | 1 | [Keys and Rooms](#1-keys-and-rooms) | Medium | O(V + E) | O(V) | [Graph DFS](#graph-dfs) |
 | 2 | [Number of Provinces](#2-number-of-provinces) | Medium | O(n²) | O(n) | [Graph DFS](#graph-dfs) |
+| 3 | [Reorder Routes to Make All Paths Lead to the City Zero](#3-reorder-routes-to-make-all-paths-lead-to-the-city-zero) | Medium | O(n) | O(n) | [Graph DFS](#graph-dfs) |
 
 ---
 
@@ -2004,6 +2005,45 @@ private void dfs(int i, int[][] isConnected, boolean[] visited) {
             dfs(j, isConnected, visited);
         }
     }
+}
+```
+
+---
+
+### 3. Reorder Routes to Make All Paths Lead to the City Zero
+
+**Approach:** Build an undirected adjacency list from the directed input: for each original edge (a → b), store `(b, cost=1)` at index a and `(a, cost=0)` at index b. Run DFS from city 0 — every original edge traversed during DFS points away from city 0 and must be reversed; every reverse edge is already correct.
+
+**Time Complexity:** O(n) — each city and edge visited once.
+
+**Space Complexity:** O(n) — adjacency list, visited array, and call stack each hold at most n entries.
+
+**Pattern:** [Graph DFS](#graph-dfs) — treat a directed tree as undirected for traversal; tag edges to distinguish direction.
+
+**Key Insight:** Storing each edge in both directions (original with cost 1, reverse with cost 0) lets DFS reach every city while the cost tag tells you whether a reversal is needed. Without the reverse edges, cities whose roads point toward city 0 would be unreachable from city 0 during traversal.
+
+**Code:**
+```java
+public int minReorder(int n, int[][] connections) {
+    List<List<Node>> adjacencyList = new ArrayList<>(n);
+    for (int i = 0; i < n; i++) adjacencyList.add(new ArrayList<>());
+    for (int[] c : connections) {
+        adjacencyList.get(c[0]).add(new Node(c[1], true));
+        adjacencyList.get(c[1]).add(new Node(c[0], false));
+    }
+    boolean[] visited = new boolean[n];
+    return dfs(0, visited, adjacencyList);
+}
+
+private int dfs(int node, boolean[] visited, List<List<Node>> adjacencyList) {
+    int counter = 0;
+    visited[node] = true;
+    for (Node neighbour : adjacencyList.get(node)) {
+        if (visited[neighbour.v()]) continue;
+        if (neighbour.isOrdinal()) counter++;
+        counter += dfs(neighbour.v(), visited, adjacencyList);
+    }
+    return counter;
 }
 ```
 
